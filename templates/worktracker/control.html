@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}<title>Time track controls</title>{% endblock %}
+
+{%block content%}
+    <div class="container">
+    {% if time_block %}
+        <h1>Current block</h1>
+        <div class="row">
+            <div class="col-3">
+                {{time_block.project}}
+            </div>
+            <div class="col-3">
+                {{time_block.cat}}
+            </div>
+            <div class="col-3">
+                {{time_block.duration|floatformat:1}}
+            </div>
+        <div class="row">
+            <div class="col-12">
+                <form action="{%url 'worktracker:stop'%}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <button class="btn btn-primary">Stop</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% else %}
+        <h1>Start block</h1>
+        <div class="row">
+            <div class="col-12">
+                <form action="{%url 'worktracker:start'%}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        {{start_form.as_p}}
+                        <button class="btn btn-primary">Start</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+    </div>
+{% endblock %}
