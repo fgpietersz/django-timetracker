@@ -8,6 +8,7 @@ admin.site.register(Client)
 
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['name', 'client']
+    prepopulated_fields = {"slug": ("title",)}
 
 admin.site.register(Project, ProjectAdmin)
 
@@ -21,3 +22,4 @@ class BlockAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
 
 admin.site.register(Block, BlockAdmin)
+    
