@@ -62,23 +62,30 @@ def stop(request):
     return redirect('worktracker:control')
 
 
-@login_required
-def report(request):
-    form = ReportForm(request.POST or None)
-    if form.is_valid():
-        clients = Client.objects.all()
-    else:
-        clients = []
-    print(clients)
-    # annotate instead!
+def blocks_by_client(start, end):
+    clients = Client.objects.all()
     for client in clients:
         blocks = Block.objects.filter(start__range=(
-            datetime.datetime.combine(form.cleaned_data['start'], datetime.time.min),
-            datetime.datetime.combine(form.cleaned_data['end'], datetime.time.max)),
+            datetime.datetime.combine(start, datetime.time.min),
+            datetime.datetime.combine(end, datetime.time.max)),
             project__client=client
         )
         client.total_time = sum(b.duration() for b in blocks) / 60
     grand_total = sum((c.total_time for c in clients)) 
+    return clients, grand_total
+
+
+@login_required
+def report(request):
+    form = ReportForm(request.POST or None)
+    if form.is_valid():
+        clients, grand_total = blocks_by_client(form.cleaned_data['start'],
+                                                form.cleaned_data['end'])
+    else:
+        clients, grand_total = blocks_by_client(datetime.date.today(),
+                                                datetime.date.today())
     return render(request, 'worktracker/report.html',
                   {'form': form, 'clients': clients, 'grand_total': grand_total})
+
+
 
