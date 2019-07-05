@@ -3,17 +3,17 @@ from django.contrib import admin
 from .models import Client, Project, WorkCategory, Block
 
 
-admin.site.register(Client)
-
-
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ['name', 'client']
-    prepopulated_fields = {"slug": ("title",)}
+    prepopulated_fields = {'slug': ('name',)}
 
 admin.site.register(Project, ProjectAdmin)
 
+class WorkCategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+    
 
-admin.site.register(WorkCategory)
+admin.site.register(WorkCategory, WorkCategoryAdmin)
 
 
 class BlockAdmin(admin.ModelAdmin):
@@ -22,4 +22,9 @@ class BlockAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
 
 admin.site.register(Block, BlockAdmin)
-    
+
+class ClientAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+admin.site.register(Client, ClientAdmin)
+
