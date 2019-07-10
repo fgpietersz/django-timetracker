@@ -74,6 +74,18 @@ def blocks_by_client(start, end):
     grand_total = sum((c.total_time for c in clients)) 
     return clients, grand_total
 
+def blocks_by_project(start, end):
+    projects = Project.objects.all()
+    for project in projects:
+        blocks = Block.objects.filter(start__range=(
+            datetime.datetime.combine(start, datetime.time.min),
+            datetime.datetime.combine(end, datetime.time.max)),
+            project=project
+        )
+        project.total_time = sum(b.duration() for b in blocks) / 60
+    grand_total = sum((c.total_time for c in projects)) 
+    return projects, grand_total
+
 
 @login_required
 def report(request):
@@ -86,6 +98,17 @@ def report(request):
                                                 datetime.date.today())
     return render(request, 'worktracker/report.html',
                   {'form': form, 'clients': clients, 'grand_total': grand_total})
+    
 
 
-
+@login_required
+def reportproject(request):
+    form = ReportForm(request.POST or None)
+    if form.is_valid():
+        projects, grand_total = blocks_by_project(form.cleaned_data['start'],
+                                                form.cleaned_data['end'])
+    else:
+        projects, grand_total = blocks_by_project(datetime.date.today(),
+                                                datetime.date.today())
+    return render(request, 'worktracker/reportproject.html',
+                  {'form': form, 'projects': projects, 'grand_total': grand_total})
