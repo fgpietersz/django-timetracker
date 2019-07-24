@@ -42,7 +42,6 @@ def start(request):
         block = start_form.save(commit=False)
         block.user = request.user
         block.save()
-        messages.success(request, 'Block started')
         return redirect('worktracker:control')
     return render(request, 'worktracker/control.html', {
         'start_form': start_form})
@@ -58,7 +57,6 @@ def stop(request):
         return redirect('worktracker:control')
     block.end = timezone.now()
     block.save()
-    messages.success(request, 'Block %s ended' % block)
     return redirect('worktracker:control')
 
 
