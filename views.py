@@ -87,13 +87,13 @@ def blocks_by_project(start, end):
 
 @login_required
 def report(request):
-    form = ReportForm(request.POST or None)
+    today = datetime.date.today()
+    form = ReportForm(request.POST or None, inital= {'start': today, 'end': today})
     if form.is_valid():
         clients, grand_total = blocks_by_client(form.cleaned_data['start'],
                                                 form.cleaned_data['end'])
     else:
-        clients, grand_total = blocks_by_client(datetime.date.today(),
-                                                datetime.date.today())
+        clients, grand_total = blocks_by_client(today, today)
     return render(request, 'worktracker/report.html',
                   {'form': form, 'clients': clients, 'grand_total': grand_total})
     
@@ -101,12 +101,12 @@ def report(request):
 
 @login_required
 def reportproject(request):
-    form = ReportForm(request.POST or None)
+    today = datetime.date.today()
+    form = ReportForm(request.POST or None, inital= {'start': today, 'end': today)
     if form.is_valid():
         projects, grand_total = blocks_by_project(form.cleaned_data['start'],
                                                 form.cleaned_data['end'])
     else:
-        projects, grand_total = blocks_by_project(datetime.date.today(),
-                                                datetime.date.today())
+        projects, grand_total = blocks_by_project(today, today)
     return render(request, 'worktracker/reportproject.html',
                   {'form': form, 'projects': projects, 'grand_total': grand_total})
