@@ -88,7 +88,7 @@ def blocks_by_project(start, end):
 @login_required
 def report(request):
     today = datetime.date.today()
-    form = ReportForm(request.POST or None, inital= {'start': today, 'end': today})
+    form = ReportForm(request.POST or None, initial= {'start': today, 'end': today})
     if form.is_valid():
         clients, grand_total = blocks_by_client(form.cleaned_data['start'],
                                                 form.cleaned_data['end'])
@@ -102,7 +102,7 @@ def report(request):
 @login_required
 def reportproject(request):
     today = datetime.date.today()
-    form = ReportForm(request.POST or None, inital= {'start': today, 'end': today})
+    form = ReportForm(request.POST or None, initial= {'start': today, 'end': today}  )
     if form.is_valid():
         projects, grand_total = blocks_by_project(form.cleaned_data['start'],
                                                 form.cleaned_data['end'])
