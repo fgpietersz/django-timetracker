@@ -60,7 +60,9 @@ def stop(request):
     return redirect('worktracker:control')
 
 
-def blocks_by_client(start, end):
+# TODO replace below with queries with annotations
+# TODO abstract out - not DRY
+def blocks_by_client(user, start, end):
     clients = Client.objects.all()
     for client in clients:
         blocks = Block.objects.filter(start__range=(
@@ -68,11 +70,14 @@ def blocks_by_client(start, end):
             datetime.datetime.combine(end, datetime.time.max)),
             project__client=client
         )
+        if user:
+            blocks = blocks.filter(user=user)
         client.total_time = sum(b.duration() for b in blocks) / 60
     grand_total = sum((c.total_time for c in clients)) 
     return clients, grand_total
 
-def blocks_by_project(start, end):
+
+def blocks_by_project(user, start, end):
     projects = Project.objects.all()
     for project in projects:
         blocks = Block.objects.filter(start__range=(
@@ -80,6 +85,8 @@ def blocks_by_project(start, end):
             datetime.datetime.combine(end, datetime.time.max)),
             project=project
         )
+        if user:
+            blocks = blocks.filter(user=user)
         project.total_time = sum(b.duration() for b in blocks) / 60
     grand_total = sum((c.total_time for c in projects)) 
     return projects, grand_total
@@ -88,25 +95,28 @@ def blocks_by_project(start, end):
 @login_required
 def report(request):
     today = datetime.date.today()
-    form = ReportForm(request.POST or None, initial= {'start': today, 'end': today})
+    form = ReportForm(request.POST or None,
+                      initial = {'user': request.user, 'start': today, 'end': today})
     if form.is_valid():
-        clients, grand_total = blocks_by_client(form.cleaned_data['start'],
-                                                form.cleaned_data['end'])
+        clients, grand_total = blocks_by_client(
+            form.cleaned_data['start'], form.cleaned_data['end'],
+            form.cleaned_data['user'])
     else:
-        clients, grand_total = blocks_by_client(today, today)
+        clients, grand_total = blocks_by_client(request.user, today, today)
     return render(request, 'worktracker/report.html',
                   {'form': form, 'clients': clients, 'grand_total': grand_total})
     
 
-
 @login_required
 def reportproject(request):
     today = datetime.date.today()
-    form = ReportForm(request.POST or None, initial= {'start': today, 'end': today}  )
+    form = ReportForm(request.POST or None,
+                      initial = {'user': request.user, 'start': today, 'end': today})
     if form.is_valid():
-        projects, grand_total = blocks_by_project(form.cleaned_data['start'],
-                                                form.cleaned_data['end'])
+        projects, grand_total = blocks_by_project(
+            form.cleaned_data['user'], form.cleaned_data['start'],
+            form.cleaned_data['end'])
     else:
-        projects, grand_total = blocks_by_project(today, today)
+        projects, grand_total = blocks_by_project(request.user, today, today)
     return render(request, 'worktracker/reportproject.html',
                   {'form': form, 'projects': projects, 'grand_total': grand_total})
