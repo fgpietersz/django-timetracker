@@ -99,8 +99,9 @@ def report(request):
                       initial = {'user': request.user, 'start': today, 'end': today})
     if form.is_valid():
         clients, grand_total = blocks_by_client(
+            form.cleaned_data['user']
             form.cleaned_data['start'], form.cleaned_data['end'],
-            form.cleaned_data['user'])
+        )
     else:
         clients, grand_total = blocks_by_client(request.user, today, today)
     return render(request, 'worktracker/report.html',
