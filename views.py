@@ -12,29 +12,30 @@ from .forms import BlockForm, ReportForm
 
 def current_block(user):
     block = Block.objects.filter(user=user).order_by('-start').first()
-    if (block is not None) and (block.end is None):
-        print('returning:', block)
-        return block
-    print('returning:', None)
-    return None
+    if block is not None:
+        return block, not bool(block.end)
+    return None, False
 
 
 @login_required
 def control(request):
-    block = current_block(request.user)
-    print('block:', type(block))
+    block, current = current_block(request.user)
     if not block:
         start_form = BlockForm()
+    elif block.end:
+        start_form = BlockForm(
+            initial={'project': block.project, 'cat': block.cat})
     else:
         start_form = None
     return render(request, 'worktracker/control.html', {
-        'start_form': start_form, 'time_block': block})
+        'start_form': start_form,
+        'time_block': block if current else None})
 
 
 @login_required
 def start(request):
-    block = current_block(request.user)
-    if block:
+    block, current = current_block(request.user)
+    if current:
         messages.error(request, 'Already running block')
         return redirect('worktracker:control')
     start_form = BlockForm(request.POST or None)
@@ -49,7 +50,7 @@ def start(request):
 
 @login_required
 def stop(request):
-    block = current_block(request.user)
+    block, _ = current_block(request.user)
     if not block:
         messages.error(request, 'No current work to stop')
         return redirect('worktracker:control')
