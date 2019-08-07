@@ -19,20 +19,24 @@ def current_block(user):
     return None
 
 def get_recent_blocks(user):
-        start = datetime.datetime.combine(datetime.datetime.today, datetime.time.min)
-        return Block.objects.filter(user=user, start_gte=start)
+        start = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+        return Block.objects.filter(user=user, start__gte=start)
     
 
 @login_required
 def control(request):
     block = current_block(request.user)
+    past_blocks = get_recent_blocks(request.user)
     print('block:', type(block))
     if not block:
         start_form = BlockForm()
     else:
         start_form = None
+    print('past_blocks:', type(block))
+    if not past_blocks:
+        past_blocks = None
     return render(request, 'worktracker/control.html', {
-        'start_form': start_form, 'time_block': block})
+        'start_form': start_form, 'time_block': block, 'recent_blocks': past_blocks})
 
 
 @login_required

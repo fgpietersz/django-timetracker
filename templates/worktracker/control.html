@@ -40,5 +40,26 @@
             </div>
         </div>
     {% endif %}
+	<h1>Recent blocks</h1>
+        <div class="row">
+            <div class="col-12">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <table class="table">
+                        {{form.as_table}}
+                        </table>
+                        <button class="btn btn-primary">View</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+    <table class="table">
+        <tr><th>Blocks</th><th>Total Time</th></tr>
+        {% for past_block in past_blocks %}
+            <tr><td>{{past_block}}</td><td>{{past_block.total_time|floatformat:2}}</td></tr>
+        {% endfor %}
+	<tr><th>Total</th><td>{{grand_total|floatformat:2}}</td></tr>
+    </table>
 {% endblock %}
