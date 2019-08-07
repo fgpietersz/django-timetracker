@@ -18,6 +18,10 @@ def current_block(user):
     print('returning:', None)
     return None
 
+def get_recent_blocks(user):
+        start = datetime.datetime.combine(datetime.datetime.today, datetime.time.min)
+        return Block.objects.filter(user=user, start_gte=start)
+    
 
 @login_required
 def control(request):
