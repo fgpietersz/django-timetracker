@@ -56,10 +56,9 @@
         </div>
     </div>
     <table class="table">
-        <tr><th>Blocks</th><th>Total Time</th></tr>
-        {% for past_block in past_blocks %}
-            <tr><td>{{past_block}}</td><td>{{past_block.total_time|floatformat:2}}</td></tr>
+        <tr><th>Project</th><th>Client</th><th>Time</th></tr>
+        {% for recent_block in recent_blocks %}
+            <tr><td>{{recent_block.project.name}}</td><td>{{recent_block.project.client.name}}</td><td>{{recent_block.duration|floatformat:2}}</td></tr>
         {% endfor %}
-	<tr><th>Total</th><td>{{grand_total|floatformat:2}}</td></tr>
     </table>
 {% endblock %}
