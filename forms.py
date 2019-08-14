@@ -10,7 +10,7 @@ from .models import Block, Client
 class BlockForm(forms.ModelForm):
     class Meta:
         model = Block
-        fields = ('project', 'cat')
+        fields = ('project', 'cat', 'description')
 
 
 class ReportForm(forms.Form):

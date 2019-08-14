@@ -50,6 +50,7 @@ class Block(models.Model):
                              related_name='work_blocks', db_index=True)
     cat = models.ForeignKey(WorkCategory, on_delete=models.PROTECT,
                             related_name='blocks', db_index=True)
+    description = models.TextField(blank=True)
     class Meta:
         ordering = ['-start']
 
