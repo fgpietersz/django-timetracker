@@ -10,6 +10,8 @@ from .models import Client, Project, WorkCategory, Block
 from .forms import BlockForm, ReportForm
 
 
+
+
 def current_block(user):
     block = Block.objects.filter(user=user).order_by('-start').first()
     if (block is not None) and (block.end is None):
@@ -80,8 +82,9 @@ def blocks_by_client(user, start, end):
         )
         if user:
             blocks = blocks.filter(user=user)
-        client.total_time = sum(b.duration() for b in blocks) / 60
-    grand_total = sum((c.total_time for c in clients)) 
+        client.total_time = sum((b.duration() for b in blocks),
+                                datetime.timedelta(0))
+    grand_total = sum((c.total_time for c in clients), datetime.timedelta(0)) 
     return clients, grand_total
 
 
@@ -95,8 +98,9 @@ def blocks_by_project(user, start, end):
         )
         if user:
             blocks = blocks.filter(user=user)
-        project.total_time = sum(b.duration() for b in blocks) / 60
-    grand_total = sum((c.total_time for c in projects)) 
+        project.total_time = sum ((b.duration() for b in blocks),
+                                  datetime.timedelta(0))
+    grand_total = sum((c.total_time for c in projects), datetime.timedelta(0)) 
     return projects, grand_total
 
 

@@ -22,8 +22,8 @@
     <table class="table">
         <tr><th>Client</th><th>Total Time</th></tr>
         {% for client in clients %}
-            <tr><td>{{client}}</td><td>{{client.total_time|floatformat:2}}</td></tr>
+            <tr><td>{{client}}</td><td>{{client.total_time}}</td></tr>
         {% endfor %}
-	<tr><th>Total</th><td>{{grand_total|floatformat:2}}</td></tr>
+	<tr><th>Total</th><td>{{grand_total}}</td></tr>
     </table>
 {% endblock %}
