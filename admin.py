@@ -17,7 +17,7 @@ admin.site.register(WorkCategory, WorkCategoryAdmin)
 
 
 class BlockAdmin(admin.ModelAdmin):
-    list_display = ['project', 'cat', 'start', 'end', 'duration']
+    list_display = ['project', 'cat', 'start', 'end', 'description', 'duration', 'user']
     list_filter = ['project', 'project__client', 'cat', 'user']
     date_hierarchy = 'start'
 
