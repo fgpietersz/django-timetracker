@@ -10,16 +10,25 @@ from .models import Client, Project, WorkCategory, Block
 from .forms import BlockForm, ReportForm
 
 
+
+
 def current_block(user):
     block = Block.objects.filter(user=user).order_by('-start').first()
     if block is not None:
         return block, not bool(block.end)
     return None, False
 
+def get_recent_blocks(user):
+    start = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
+    return Block.objects.filter(user=user, start__gte=start).select_related(
+        'project', 'project__client')
+    
+    
 
 @login_required
 def control(request):
     block, current = current_block(request.user)
+    recent_blocks = get_recent_blocks(request.user)
     if not block:
         start_form = BlockForm()
     elif block.end:
@@ -27,6 +36,7 @@ def control(request):
             initial={'project': block.project, 'cat': block.cat})
     else:
         start_form = None
+    print('recent_blocks:', type(block))
     return render(request, 'worktracker/control.html', {
         'start_form': start_form,
         'time_block': block if current else None})
@@ -73,8 +83,9 @@ def blocks_by_client(user, start, end):
         )
         if user:
             blocks = blocks.filter(user=user)
-        client.total_time = sum(b.duration() for b in blocks) / 60
-    grand_total = sum((c.total_time for c in clients)) 
+        client.total_time = sum((b.duration() for b in blocks),
+                                datetime.timedelta(0))
+    grand_total = sum((c.total_time for c in clients), datetime.timedelta(0)) 
     return clients, grand_total
 
 
@@ -88,8 +99,9 @@ def blocks_by_project(user, start, end):
         )
         if user:
             blocks = blocks.filter(user=user)
-        project.total_time = sum(b.duration() for b in blocks) / 60
-    grand_total = sum((c.total_time for c in projects)) 
+        project.total_time = sum ((b.duration() for b in blocks),
+                                  datetime.timedelta(0))
+    grand_total = sum((c.total_time for c in projects), datetime.timedelta(0)) 
     return projects, grand_total
 
 

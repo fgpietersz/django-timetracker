@@ -59,6 +59,6 @@ class Block(models.Model):
 
     def duration(self):
         if self.end:
-            return (self.end - self.start).seconds / 60
+            return self.end - self.start
         else:
-            return (timezone.now() - self.start).seconds / 60
+            return timezone.now() - self.start
