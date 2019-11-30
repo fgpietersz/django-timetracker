@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load worktracker_tags %}
+
 {% block title %}<title>Time track controls</title>{% endblock %}
 
 {%block content%}
@@ -14,7 +16,7 @@
                 {{time_block.cat}}
             </div>
             <div class="col-3">
-                {{time_block.duration}}
+                {{time_block.duration|hhmm}}
             </div>
         <div class="row">
             <div class="col-12">
@@ -40,6 +42,7 @@
             </div>
         </div>
     {% endif %}
+    {%comment%} Not currently working in view
 	<h1>Recent blocks</h1>
         <div class="row">
             <div class="col-12">
@@ -61,4 +64,5 @@
             <tr><td>{{recent_block.project.name}}</td><td>{{recent_block.project.client.name}}</td><td>{{recent_block.duration}}</td></tr>
         {% endfor %}
     </table>
+    {%endcomment%}
 {% endblock %}

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load worktracker_tags %}
+
 {% block title %}<title>Time track report</title>{% endblock %}
 
 {%block content%}
@@ -22,8 +24,8 @@
     <table class="table">
         <tr><th>Client</th><th>Total Time</th></tr>
         {% for client in clients %}
-            <tr><td>{{client}}</td><td>{{client.total_time}}</td></tr>
+            <tr><td>{{client}}</td><td>{{client.total_time|hhmm}}</td></tr>
         {% endfor %}
-	<tr><th>Total</th><td>{{grand_total}}</td></tr>
+	<tr><th>Total</th><td>{{grand_total|hhmm}}</td></tr>
     </table>
 {% endblock %}

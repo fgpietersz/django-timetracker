@@ -36,7 +36,6 @@ def control(request):
             initial={'project': block.project, 'cat': block.cat})
     else:
         start_form = None
-    print('recent_blocks:', type(block))
     return render(request, 'worktracker/control.html', {
         'start_form': start_form,
         'time_block': block if current else None})
