@@ -18,6 +18,7 @@ class Client(models.Model):
 class Project(models.Model):
     client = models.ForeignKey(Client, on_delete=models.PROTECT,
                                related_name='projects')
+    active = models.BooleanField(default=True)
     name = models.CharField(max_length=150, unique=True)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)

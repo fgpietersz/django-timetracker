@@ -4,14 +4,15 @@ from .models import Client, Project, WorkCategory, Block
 
 
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['name', 'client']
+    list_display = ['name', 'client', 'active']
+    list_filter = ['active']
     prepopulated_fields = {'slug': ('name',)}
 
 admin.site.register(Project, ProjectAdmin)
 
+
 class WorkCategoryAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug': ('name',)}
-    
+    prepopulated_fields = {'slug': ('name',)}    
 
 admin.site.register(WorkCategory, WorkCategoryAdmin)
 
@@ -22,6 +23,7 @@ class BlockAdmin(admin.ModelAdmin):
     date_hierarchy = 'start'
 
 admin.site.register(Block, BlockAdmin)
+
 
 class ClientAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}

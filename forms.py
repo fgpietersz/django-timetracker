@@ -4,13 +4,17 @@ from django import forms
 from datetime import timedelta
 from django.contrib.auth import get_user_model
 
-from .models import Block, Client
+from .models import Block, Project
 
 
 class BlockForm(forms.ModelForm):
     class Meta:
         model = Block
         fields = ('project', 'cat', 'description')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['project'].queryset = Project.objects.filter(active=True)
 
 
 class ReportForm(forms.Form):
