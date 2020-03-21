@@ -84,6 +84,7 @@ def blocks_by_client(user, start, end):
             blocks = blocks.filter(user=user)
         client.total_time = sum((b.duration() for b in blocks),
                                 datetime.timedelta(0))
+    clients = [c for c in clients if c.total_time > 0]
     grand_total = sum((c.total_time for c in clients), datetime.timedelta(0)) 
     return clients, grand_total
 
