@@ -3,6 +3,7 @@ from collections import defaultdict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.contrib import messages
 
@@ -101,11 +102,12 @@ def blocks_by_project(user, start, end):
             blocks = blocks.filter(user=user)
         project.total_time = sum ((b.duration() for b in blocks),
                                   datetime.timedelta(0))
+    projects = [c for c in projects if c.total_time.total_seconds() > 0]
     grand_total = sum((c.total_time for c in projects), datetime.timedelta(0)) 
     return projects, grand_total
 
 
-@login_required
+@staff_member_required
 def report(request):
     today = datetime.date.today()
     form = ReportForm(request.POST or None,
@@ -121,7 +123,7 @@ def report(request):
                   {'form': form, 'clients': clients, 'grand_total': grand_total})
     
 
-@login_required
+@staff_member_required
 def reportproject(request):
     today = datetime.date.today()
     form = ReportForm(request.POST or None,
