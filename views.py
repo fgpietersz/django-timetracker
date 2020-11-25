@@ -1,5 +1,4 @@
 import datetime
-from collections import defaultdict
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -7,7 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from django.contrib import messages
 
-from .models import Client, Project, WorkCategory, Block
+from .models import Client, Project, Block
 from .forms import BlockForm, ReportForm
 
 
@@ -18,6 +17,7 @@ def current_block(user):
     if block is not None:
         return block, not bool(block.end)
     return None, False
+
 
 def get_recent_blocks(user):
     start = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
@@ -38,8 +38,11 @@ def control(request):
     else:
         start_form = None
     return render(request, 'worktracker/control.html', {
-        'start_form': start_form,
-        'time_block': block if current else None})
+                  'start_form': start_form,
+                  'time_block': block if current else None,
+                  'recent_blocks': recent_blocks
+        }
+    )
 
 
 @login_required
